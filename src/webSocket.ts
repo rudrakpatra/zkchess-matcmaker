@@ -78,7 +78,7 @@ setInterval(() => {
   //   console.log('players:', players)
   console.log(
     'current unmatchedPlayers',
-    Array.from(unmatchedPlayers.entries()).map((p) => p[1]?.publicKey),
+    Array.from(unmatchedPlayers.entries()).map((p) => {return p[1]?.publicKey.substring(0,7)+" soc:"+p[1]?.socket.id.substring(0,7) + " elo:"+p[0]}),
   )
   if (players.length < 2) return
 
@@ -93,7 +93,7 @@ setInterval(() => {
       startingThreshold
     // if player0 and player1 elo rating < threshold then match
     if (Math.abs(player0[0] - player1[0]) < player0Threshold) {
-      console.log('matched', player0[1].publicKey, player1[1].publicKey)
+      console.log('matched', player0[1].publicKey+" soc:"+player0[1].socket.id.substring(0,7) , player1[1].publicKey +" soc:"+player1[1].socket.id.substring(0,7) )
       startGame(player0[1], player1[1])
       i++ // skip player1
     } else {

@@ -26,7 +26,7 @@ const io = new Server(server, {
   // parser: require("socket.io-msgpack-parser"), TODO https://socket.io/docs/v3/custom-parser/
   // ...
   cors: {
-    origin: '*',
+    origin: true,
     // credentials: true,
   },
 })
