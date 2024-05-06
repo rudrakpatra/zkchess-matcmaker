@@ -73,14 +73,15 @@ setInterval(() => {
     unmatchedPlayers.entries(),
   ).filter((p) => {
     if (p[1] === undefined) return false
+    if (!p[1].socket.connected)
+      console.log('player disconnected removing', logPlayers(p[1], p[0]))
     return p[1].socket.connected
   })
   //   console.log('players:', players)
   console.log(
     'current unmatchedPlayers',
-    Array.from(unmatchedPlayers.entries()).map((p) => {return p[1]?.publicKey.substring(0,7)+" soc:"+p[1]?.socket.id.substring(0,7) + " elo:"+p[0]}),
+    Array.from(unmatchedPlayers.entries()).map((p) => logPlayers(p[1], p[0])),
   )
-  if (players.length < 2) return
 
   let remainingPlayers: [number, PlayerInfo][] = []
   let i
@@ -93,7 +94,11 @@ setInterval(() => {
       startingThreshold
     // if player0 and player1 elo rating < threshold then match
     if (Math.abs(player0[0] - player1[0]) < player0Threshold) {
-      console.log('matched', player0[1].publicKey+" soc:"+player0[1].socket.id.substring(0,7) , player1[1].publicKey +" soc:"+player1[1].socket.id.substring(0,7) )
+      console.log(
+        'matched ',
+        logPlayers(player0[1], player0[0]),
+        logPlayers(player1[1], player1[0]),
+      )
       startGame(player0[1], player1[1])
       i++ // skip player1
     } else {
@@ -109,7 +114,7 @@ setInterval(() => {
   unmatchedPlayers.addMany(remainingPlayers)
   console.log(
     'updated unmatchedPlayers',
-    Array.from(unmatchedPlayers.entries()).map((p) => p[1]?.publicKey),
+    Array.from(unmatchedPlayers.entries()).map((p) => logPlayers(p[1], p[0])),
   )
 }, 10000)
 
@@ -129,10 +134,10 @@ function startGame(player0: PlayerInfo, player1: PlayerInfo) {
   games.set(player1.socket.id, gameInfo)
 
   // setup relays for move events
-  player0.socket.on('move', (msg) =>
+  player0.socket.on('move', (msg: any) =>
     player0.socket.to(gameInfo.roomId).emit('move', msg),
   )
-  player1.socket.on('move', (msg) =>
+  player1.socket.on('move', (msg: any) =>
     player1.socket.to(gameInfo.roomId).emit('move', msg),
   )
   // notify players
@@ -154,4 +159,18 @@ function startGame(player0: PlayerInfo, player1: PlayerInfo) {
       jsonSign: player0.jsonSign,
     },
   })
+}
+
+function logPlayers(p?: PlayerInfo, rating?: number) {
+  if (!p) return 'undefined'
+  if (rating) {
+    return `pubKey: ${p.publicKey.substring(
+      0,
+      7,
+    )} socId:${p.socket.id.substring(0, 5)} rating:${rating}`
+  }
+  return `pubKey:...${p.publicKey.substring(
+    0,
+    7,
+  )} socId:${p.socket.id.substring(0, 5)}`
 }
