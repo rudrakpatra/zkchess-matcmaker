@@ -11,7 +11,6 @@ const app: Application = express()
 
 const PORT = 8080
 const vercelSettings="https://vercel.com/rudrakpatras-projects/zkchess/settings/environment-variables"
-const workspaceUrl=process.env.GITPOD_WORKSPACE_URL
 const html=`
     <h1>
       REMINDER: 
@@ -20,10 +19,7 @@ const html=`
       Set the environment variables in vercel
     </a>
 		<br/>
-		<h5>SET PUBLIC_MATCHMAKER_URL to this:</h5>
-		<h2>
-      ${workspaceUrl}
-    <h2>
+		<h5>SET PUBLIC_MATCHMAKER_URL to the link:</h5>
 `
 app.use(cors({
   origin: '*',
@@ -32,12 +28,13 @@ app.use(cors({
 }))
 
 app.get('/', (req: Request, res: Response) => {
+  console.log("1");
   res.status(200).send(html)
 })
 
 const httpServer = createServer(app)
 httpServer.listen(PORT, () => {
-  console.log(`Service starting at ${process.env.GITPOD_WORKSPACE_URL}`)
+  console.log(`Service starting at https://localhost:${PORT}`)
 })
 
 const io = new Server(httpServer, {

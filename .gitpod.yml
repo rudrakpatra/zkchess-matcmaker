@@ -12,7 +12,7 @@ tasks:
 ports:
     - name: Matckmaker
       port: 8080
-      protocol: https
+      protocol: http
       onOpen: open-preview
       description: MatchMaker Server
 
