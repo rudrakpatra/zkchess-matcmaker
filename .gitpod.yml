@@ -8,4 +8,10 @@ tasks:
   - init: npm install && npm run build
     command: npm run start
 
+# Ports to expose on workspace startup
+ports:
+    - port: 8080
+      onOpen: open-preview
+      name: Website
+      description: Website Preview
 
