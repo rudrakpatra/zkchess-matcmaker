@@ -10,8 +10,9 @@ tasks:
 
 # Ports to expose on workspace startup
 ports:
-    - port: 8080
+    - name: Matckmaker
+      port: 8080
+      protocol: https
       onOpen: open-preview
-      name: Website
-      description: Website Preview
+      description: MatchMaker Server
 

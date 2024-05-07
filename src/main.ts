@@ -25,25 +25,29 @@ const html=`
       ${workspaceUrl}
     <h2>
 `
-app.use(cors())
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin']
+}))
+
 app.get('/', (req: Request, res: Response) => {
   res.status(200).send(html)
 })
 
-const server = createServer(app)
-server.listen(PORT, () => {
+const httpServer = createServer(app)
+httpServer.listen(PORT, () => {
   console.log(`Service starting at ${process.env.GITPOD_WORKSPACE_URL}`)
 })
-// app.listen(PORT, () => {
-//   console.info(`Service starting at ${SERVER_URL}:${PORT}`)
-// })
 
-const io = new Server(server, {
+const io = new Server(httpServer, {
   // parser: require("socket.io-msgpack-parser"), TODO https://socket.io/docs/v3/custom-parser/
   // ...
   cors: {
-    origin: true,
-    // credentials: true,
-  },
+    origin: "*",
+    methods: ['GET', 'POST', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin']
+  }
 })
+
 io.on('connection', handleSocketConnection)
